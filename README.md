@@ -1,1 +1,2 @@
-# computer_vision_projects
+# Computer Vision Projects
+* Point cloud rendering
