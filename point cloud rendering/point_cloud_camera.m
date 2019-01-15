@@ -36,11 +36,7 @@ for i = 1:length(locations_2D)
     x = round(locations_2D(i, 2));
     y = round(locations_2D(i, 1));
     if dist_from_camera(i) < pixel_dist_from_camera(x, y)
-        for j = -1:1
-            for k = -1:1
-                image(x+j, y+k, :) = colors(i, :);
-            end
-        end
+        image(x, y, :) = colors(i, :);
         pixel_dist_from_camera(x, y) = dist_from_camera(i);
     end
 end
