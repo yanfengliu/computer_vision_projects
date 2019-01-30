@@ -16,9 +16,9 @@ end
 new_locations = H * locations;
 new_locations = new_locations(1:2, :) ./ new_locations(3, :);
 corners = [1, 1, 1;
-    1, 512, 1;
-    512, 1, 1;
-    512, 512, 1];
+    1, width, 1;
+    height, 1, 1;
+    height, width, 1];
 new_corners = H * corners';
 new_corners = new_corners(1:2, :) ./ new_corners(3, :);
 new_corners = round(new_corners);
@@ -28,10 +28,10 @@ new_width = max(new_corners(2, :)) - min(new_corners(2, :)) + 1;
 new_height = max(new_corners(1, :)) - min(new_corners(1, :)) + 1;
 new_img = zeros(new_height, new_width, 3) + 255;
 
-H_inv = inv(H);
+H_inv = H \ eye(3);
 for i = 1:new_height
     for j = 1:new_width
-        idx_inv = H \ [i+y_shift; j+x_shift; 1];
+        idx_inv = H_inv * [i+y_shift; j+x_shift; 1];
         idx_inv = idx_inv(1:2) / idx_inv(3);
         idx_inv = round(idx_inv);
         if ~(any(idx_inv < 1) || (idx_inv(1) > height) || (idx_inv(2) > width))
