@@ -1,9 +1,3 @@
-% include inverseWarp.m
-dir = pwd;
-idcs = strfind(dir,filesep);
-parent_dir = dir(1:idcs(end)-1);
-addpath(fullfile(parent_dir, 'inverse_warping', filesep));
-
 % read image and preprocess data
 img = imread('book.jpg');
 resize_factor = 0.3; 

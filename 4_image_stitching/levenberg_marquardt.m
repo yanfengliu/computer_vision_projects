@@ -1,15 +1,19 @@
 function H = levenberg_marquardt(x1, x2, lambda)
     H = eye(3);
-    for j = 1:10
+    for j = 1:100
         A = 0;
         for i = 1:size(x1, 1)
             J = Jacobian(x1(i, :), H);
             A = A + J' * J;
         end
         b = 0;
+        r_sum = 0;
         for i = 1:size(x1, 1)
             J = Jacobian(x1(i, :), H);
-            r = x2(i, :) - x1(i, :);
+            x1_ = H * [x1(i, :), 1]';
+            x1_ = x1_(1:2)/x1_(3);
+            r = x2(i, :) - x1_';
+            r_sum = r_sum + r;
             b = b + J' * r';
         end
         p = H_to_p(H);
@@ -34,7 +38,7 @@ function J = Jacobian(pt, H)
 end
 
 function p = H_to_p(H)
-    p = [H(1, 1)-1, H(1, 2), H(1, 3), H(2, 1), H(2, 2)-1, H(2, 3), H(3, 1), H(3, 2)];
+    p = [H(1, 1)-1, H(1, 2), H(1, 3), H(2, 1), H(2, 2)-1, H(2, 3), H(3, 1), H(3, 2)]';
 end
 
 function H = p_to_H(p)

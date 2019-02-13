@@ -6,8 +6,8 @@ function combined_img = imageStitch(A, B, H)
     colors = zeros(3, width * height);
     for i = 1:height
         for j = 1:width
-            locations(:, (i-1)*height + j) = [i, j, 1];
-            colors(:, (i-1)*height + j) = A(i, j, :);
+            locations(:, (i-1)*width + j) = [i, j, 1];
+            colors(:, (i-1)*width + j) = A(i, j, :);
         end
     end
     corners = [1, 1, 1;
@@ -21,9 +21,7 @@ function combined_img = imageStitch(A, B, H)
     y_shift = min(new_corners(1, :));
     new_width = max(new_corners(2, :)) - min(new_corners(2, :)) + 1;
     new_height = max(new_corners(1, :)) - min(new_corners(1, :)) + 1;
-    combined_width = new_width + abs(x_shift);
-    combined_height = new_height + abs(y_shift);
-    combined_img = zeros(combined_height, combined_width, 3);
+    new_A = zeros(new_height, new_width, 3) + 255;
 
     H_inv = H \ eye(3);
     for i = 1:new_height
@@ -32,14 +30,9 @@ function combined_img = imageStitch(A, B, H)
             idx_inv = idx_inv(1:2) / idx_inv(3);
             idx_inv = round(idx_inv);
             if ~(any(idx_inv < 1) || (idx_inv(1) > height) || (idx_inv(2) > width))
-                color_idx = (idx_inv(1)-1) * height + idx_inv(2);
-                combined_img(i, j, :) = colors(:, color_idx);
+                color_idx = (idx_inv(1)-1) * width + idx_inv(2);
+                new_A(i, j, :) = colors(:, color_idx);
             end
         end
     end
-    
-    dims = size(B);
-    width = dims(2);
-    height = dims(1);
-    imshow(combined_img/255.0);
 end
