@@ -41,5 +41,5 @@ function combined_img = imageStitch(A, B, H)
     dims = size(B);
     width = dims(2);
     height = dims(1);
-    combined_img((end - height + 1):end, (end - width + 1):end, :) = B;
+    imshow(combined_img/255.0);
 end

@@ -9,9 +9,18 @@ points_1 = detectSURFFeatures(gray_img_1);
 points_2 = detectSURFFeatures(gray_img_2);
 [features_1, valid_points_1] = extractFeatures(gray_img_1, points_1);
 [features_2, valid_points_2] = extractFeatures(gray_img_2, points_2);
-idxPairs = featureMatch(features_1, features_2, 2);
+idxPairs = featureMatch(features_1, features_2, 3);
+
+xyA = valid_points_1(idxPairs(:, 1), :);
+xyB = valid_points_2(idxPairs(:, 2), :);
+figure; ax = axes;
+showMatchedFeatures(img_1, img_2, xyA, xyB, 'montage', 'Parent',ax);
+title(ax, 'Candidate point matches');
+legend(ax, 'Matched points 1','Matched points 2');
+
 xyA = valid_points_1.Location(idxPairs(:, 1), :);
 xyB = valid_points_2.Location(idxPairs(:, 2), :);
+
 
 distThresh = 10;
 agreeThresh = 0.5;

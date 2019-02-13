@@ -1,6 +1,6 @@
 function [H, fit, its] = ransac(xyA, xyB, distThresh, agreeThresh, maxIterations)
     its = 0;
-    h_xyA = [xyA, zeros(length(xyA), 1)];
+    h_xyA = [xyA, zeros(length(xyA), 1)+1];
     while(its < maxIterations)
         its = its + 1;
         xy1 = xyA(randi([1, size(xyA, 1)], 1, 4), :);
@@ -14,5 +14,8 @@ function [H, fit, its] = ransac(xyA, xyB, distThresh, agreeThresh, maxIterations
         if (fit > agreeThresh)
             break;
         end
+    end
+    if fit < agreeThresh
+        error("Couldn't find a good H");
     end
 end
