@@ -35,4 +35,5 @@ function combined_img = imageStitch(A, B, H)
             end
         end
     end
+    combined_img = new_A;
 end

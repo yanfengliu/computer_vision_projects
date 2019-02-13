@@ -25,6 +25,7 @@ impixelinfo;
 xyA = xyA.Location;
 xyB = xyB.Location;
 
+% index format must be [row, column]
 xyA = [xyA(:, 2), xyA(:, 1)];
 xyB = [xyB(:, 2), xyB(:, 1)];
 
@@ -33,5 +34,7 @@ agreeThresh = 0.5;
 maxIterations = 100;
 [H, fits, its] = ransac(xyA, xyB, distThresh, agreeThresh, maxIterations);
 final_img = imageStitch(img_1, img_2, H);
+figure;
+imshow(img_2);
 figure;
 imshow(final_img/255.0);

@@ -3,8 +3,9 @@ function [H, fit, its] = ransac(xyA, xyB, distThresh, agreeThresh, maxIterations
     h_xyA = [xyA, zeros(length(xyA), 1)+1];
     while(its < maxIterations)
         its = its + 1;
-        xy1 = xyA(randi([1, size(xyA, 1)], 1, 4), :);
-        xy2 = xyB(randi([1, size(xyB, 1)], 1, 4), :);
+        idx = randi([1, size(xyA, 1)], 1, 4);
+        xy1 = xyA(idx, :);
+        xy2 = xyB(idx, :);
         H = levenberg_marquardt(xy1, xy2, 1);
         xyB_ = H * h_xyA';
         nh_xyB_ = xyB_(1:2, :)./xyB_(3, :);

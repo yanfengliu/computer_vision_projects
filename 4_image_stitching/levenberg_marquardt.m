@@ -1,14 +1,14 @@
 function H = levenberg_marquardt(x1, x2, lambda)
     H = eye(3);
-    for j = 1:100
+    for j = 1:10
         A = 0;
-        for i = 1:size(x1, 1)
+        for i = 1:4
             J = Jacobian(x1(i, :), H);
             A = A + J' * J;
         end
         b = 0;
         r_sum = 0;
-        for i = 1:size(x1, 1)
+        for i = 1:4
             J = Jacobian(x1(i, :), H);
             x1_ = H * [x1(i, :), 1]';
             x1_ = x1_(1:2)/x1_(3);
@@ -24,12 +24,12 @@ function H = levenberg_marquardt(x1, x2, lambda)
 end
 
 function J = Jacobian(pt, H)
-    x = pt(1);
-    y = pt(2);
+    x = pt(2);
+    y = pt(1);
     new_pt = H * [pt, 1]';
     new_pt = new_pt(1:2)/new_pt(3);
-    x_ = new_pt(1);
-    y_ = new_pt(2);
+    x_ = new_pt(2);
+    y_ = new_pt(1);
     J = [x, y, 1, 0, 0, 0, -x_ * x, -x_ * y; 
          0, 0, 0, x, y, 1, -y_ * x, -y_ * y];
     h_20 = H(3, 1);
