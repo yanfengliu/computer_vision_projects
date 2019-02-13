@@ -17,7 +17,7 @@ x2 = round(x2 * mean(std(x1)) / mean(std(x2)));
 x1 = [x1, zeros(4, 1)+1];
 x2 = [x2, zeros(4, 1)+1];
 
-H = dlt(x1, x2);
+H = normalized_dlt(x1, x2);
 new_img = inverseWarp(img, H);
 figure();
 imshow(new_img/255.0);

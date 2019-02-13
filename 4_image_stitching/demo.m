@@ -29,12 +29,10 @@ xyB = xyB.Location;
 xyA = [xyA(:, 2), xyA(:, 1)];
 xyB = [xyB(:, 2), xyB(:, 1)];
 
-distThresh = 20;
-agreeThresh = 0.5;
+distThresh = 5;
+agreeThresh = 0.8;
 maxIterations = 100;
-[H, fits, its] = ransac(xyA, xyB, distThresh, agreeThresh, maxIterations);
-final_img = imageStitch(img_1, img_2, H);
-figure;
-imshow(img_2);
+[H, fits, its, xy1, xy2] = ransac(xyA, xyB, distThresh, agreeThresh, maxIterations);
+final_img = imageStitch(img_1, img_2, H, xy1, xy2);
 figure;
 imshow(final_img/255.0);
