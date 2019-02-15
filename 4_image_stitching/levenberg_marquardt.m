@@ -1,33 +1,32 @@
-function H = levenberg_marquardt(x1, x2, lambda)
+function H = levenberg_marquardt(n_x1, n_x2, lambda)
+    % format is [x, y]
     H = eye(3);
+    figure; hold on;
     for j = 1:10
         A = 0;
-        for i = 1:4
-            J = Jacobian(x1(i, :), H);
-            A = A + J' * J;
-        end
         b = 0;
-        r_sum = 0;
+        n_x2_ = zeros(4, 2);
         for i = 1:4
-            J = Jacobian(x1(i, :), H);
-            x1_ = H * [x1(i, :), 1]';
-            x1_ = x1_(1:2)/x1_(3);
-            r = x2(i, :) - x1_';
-            r_sum = r_sum + r;
+            h_x2_ = H * [n_x1(i, :), 1]';
+            n_x2_(i, :) = h_x2_(1:2)/h_x2_(3);
+            J = Jacobian(n_x1(i, :), n_x2_(i, :), H);
+            A = A + J' * J;
+            r = n_x2(i, :) - n_x2_(i, :)';
             b = b + J' * r';
         end
+        scatter(n_x2(:, 1), n_x2(:, 2), 10, 'b', 'filled');
+        scatter(n_x2_(:, 1), n_x2_(:, 2), 10, 'r', 'filled');
+        xlim([-200, 1500]); ylim([-200, 1500]);
         p = H_to_p(H);
-        delta_p = linsolve((A + lambda * diag(diag(A))), b);
+        delta_p = (A + lambda * diag(diag(A))) \ b;
         p = p + delta_p;
         H = p_to_H(p);
     end
 end
 
-function J = Jacobian(pt, H)
+function J = Jacobian(pt, new_pt, H)
     x = pt(2);
     y = pt(1);
-    new_pt = H * [pt, 1]';
-    new_pt = new_pt(1:2)/new_pt(3);
     x_ = new_pt(2);
     y_ = new_pt(1);
     J = [x, y, 1, 0, 0, 0, -x_ * x, -x_ * y; 
