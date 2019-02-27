@@ -1,22 +1,33 @@
-function H = levenberg_marquardt(n_x1, n_x2, lambda)
-    % format is [x, y]
+function H = levenberg_marquardt(homogeneous_x1, homogeneous_x2, lambda)
     H = eye(3);
-    figure; hold on;
-    for j = 1:10
+    normalized_x1 = homogeneous_x1(:, 1:2) ./ homogeneous_x1(:, 3);
+    normalized_x2 = homogeneous_x2(:, 1:2) ./ homogeneous_x2(:, 3);
+%     figure; hold on;
+    E = 100;
+    itr = 0; 
+    while (E > 1e-9 && itr < 200)
+        itr = itr + 1;
+        E = 0;
         A = 0;
         b = 0;
-        n_x2_ = zeros(4, 2);
+        normalized_x2_ = zeros(4, 2);
         for i = 1:4
-            h_x2_ = H * [n_x1(i, :), 1]';
-            n_x2_(i, :) = h_x2_(1:2)/h_x2_(3);
-            J = Jacobian(n_x1(i, :), n_x2_(i, :), H);
+            homogeneous_x2_ = H * homogeneous_x1(i, :)';
+            normalized_x2_(i, :) = homogeneous_x2_(1:2)/homogeneous_x2_(3);
+            J = Jacobian(normalized_x1(i, :), normalized_x2_(i, :), H);
             A = A + J' * J;
-            r = n_x2(i, :) - n_x2_(i, :)';
+            r = normalized_x2(i, :) - normalized_x2_(i, :);
             b = b + J' * r';
+            if itr > 1
+                e = J * delta_p - r';
+                E = E + (e'*e);
+            else
+                E = 100;
+            end
         end
-        scatter(n_x2(:, 1), n_x2(:, 2), 10, 'b', 'filled');
-        scatter(n_x2_(:, 1), n_x2_(:, 2), 10, 'r', 'filled');
-        xlim([-200, 1500]); ylim([-200, 1500]);
+%         scatter(normalized_x2(:, 2), normalized_x2(:, 1), 10, 'b', 'filled');
+%         scatter(normalized_x2_(:, 2), normalized_x2_(:, 1), 10, 'r', 'filled');
+%         xlim([-200, 1500]); ylim([-200, 1500]);
         p = H_to_p(H);
         delta_p = (A + lambda * diag(diag(A))) \ b;
         p = p + delta_p;
@@ -25,10 +36,10 @@ function H = levenberg_marquardt(n_x1, n_x2, lambda)
 end
 
 function J = Jacobian(pt, new_pt, H)
-    x = pt(2);
-    y = pt(1);
-    x_ = new_pt(2);
-    y_ = new_pt(1);
+    x = pt(1);
+    y = pt(2);
+    x_ = new_pt(1);
+    y_ = new_pt(2);
     J = [x, y, 1, 0, 0, 0, -x_ * x, -x_ * y; 
          0, 0, 0, x, y, 1, -y_ * x, -y_ * y];
     h_20 = H(3, 1);

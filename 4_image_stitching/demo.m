@@ -25,10 +25,6 @@ impixelinfo;
 xyA = xyA.Location;
 xyB = xyB.Location;
 
-% index format must be [row, column]
-xyA = [xyA(:, 2), xyA(:, 1)];
-xyB = [xyB(:, 2), xyB(:, 1)];
-
 distThresh = 5;
 agreeThresh = 0.8;
 maxIterations = 100;
